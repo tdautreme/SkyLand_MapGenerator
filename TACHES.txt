@@ -1,3 +1,7 @@
 - Configurable Ground
+- Retaper le lake generator --> Surface + nenuphar si eau en salt
+
+- Add diorite and andesite as ore in common
 - Patch plant half
 - Add biomes
+- Schematics + random rotation (Same for clan spawn)

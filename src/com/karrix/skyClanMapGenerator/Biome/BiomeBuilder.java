@@ -16,7 +16,7 @@ import com.karrix.skyClanMapGenerator.Group.OreGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 
 /*
- * What is salt ? Salt is tree, plant or any blocks we add to chunk
+ * What is salt ? Salt is tree, plant, ores or any blocks we add to chunk
  * 
  * */
 
@@ -94,14 +94,24 @@ public class BiomeBuilder {
 	
 	public void generateGround(World world, Chunk chunk, int chunkX, int chunkZ) {
     	SimplexOctaveGenerator generator = new SimplexOctaveGenerator(new Random(world.getSeed()), 8);
-        generator.setScale(0.005D);
+//    	SimplexOctaveGenerator generator = new SimplexOctaveGenerator(new Random(world.getSeed()), 100);
+//        generator.setScale(1D);
+//        generator.setScale(CommonTools.randDouble(0.005D, 0.01D));
+        if (CommonTools.randProb() < 0.95)
+            generator.setScale(0.005D);
+        else
+            generator.setScale(1D);
+
         int tempHeight = ChunkConfig.seaHeight;
         for (int X = 0; X < 16; X++) {
             for (int Z = 0; Z < 16; Z++) {
             	tempHeight = (int) (generator.noise(chunkX*16+X, chunkZ*16+Z, 0.5D, 0.5D)*15D + ChunkConfig.seaHeight);
                 
-    			chunk.getBlock(X, tempHeight, Z).setType(groundSurface);
-    			tempHeight--;
+            	if (groundSurface != null)
+            	{
+        			chunk.getBlock(X, tempHeight, Z).setType(groundSurface);
+        			tempHeight--;
+            	}
             	
     			if (groundGroup != null)
     			{
@@ -113,12 +123,16 @@ public class BiomeBuilder {
                 		}
     			}
             	                    
-                double borderDistanceCenter = ChunkConfig.maxDistance - Math.hypot(X - 8, Z - 8) + CommonTools.randInt(0, 1);
-                
-                int limit = tempHeight - (int)borderDistanceCenter;
-                
-                for (int i = tempHeight; i > limit; i--)
-                	chunk.getBlock(X, i, Z).setType(groundSupport);
+    			if (groundSupport != null)
+    			{
+    				double borderDistanceCenter = ChunkConfig.maxDistance - Math.hypot(X - 8, Z - 8) + CommonTools.randInt(0, 1);
+	                
+    				int limit = tempHeight - (int)borderDistanceCenter;
+	                
+    				for (int i = tempHeight; i > limit; i--)
+    					chunk.getBlock(X, i, Z).setType(groundSupport);
+    			}
+
             }
     	}
 	}
