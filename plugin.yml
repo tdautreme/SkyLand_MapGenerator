@@ -1,0 +1,5 @@
+name: SkyClan_MapGenerator
+main: com.karrix.skyClanMapGenerator.MapGenerator
+version: 1.0
+api-version: 1.15
+load: startup
