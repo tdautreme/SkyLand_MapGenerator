@@ -16,7 +16,7 @@ public class SaltOre extends Salt {
 
 	private int 	oreCounter;
 	private int 	minOre 		= 3;
-	private int 	maxOre 		= 8;
+	private int 	maxOre 		= 6;
 	private int 	limitOre;
 	
 	public SaltOre(Material i_saltBlock, Material i_surfaceBlock, Integer... argsArr) {

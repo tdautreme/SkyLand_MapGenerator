@@ -35,7 +35,9 @@ public class SaltCommonPreset {
 						new Salt(Material.PINK_TULIP, groundSurface),
 						new Salt(Material.OXEYE_DAISY, groundSurface),
 						new Salt(Material.BROWN_MUSHROOM, groundSurface),
-						new Salt(Material.RED_MUSHROOM, groundSurface)
+						new Salt(Material.RED_MUSHROOM, groundSurface),
+						new Salt(Material.MELON, groundSurface),
+						new Salt(Material.PUMPKIN, groundSurface)
 				})
 		};
 	}

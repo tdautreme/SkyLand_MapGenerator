@@ -14,12 +14,26 @@ import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
 
 public class AquariumBiome extends BiomeBuilder {
 	
+	private Material liquid;
+	
 	public AquariumBiome()
 	{
 		biome 			= Biome.FOREST;
 		
-		groundSurface 	= Material.GLASS;
-		groundSupport 	= Material.GLASS;
+		if (CommonTools.randProb() < 0.70D)
+		{
+			groundSurface 	= Material.CYAN_STAINED_GLASS;
+			groundSupport 	= Material.CYAN_STAINED_GLASS;
+			liquid 			= Material.WATER;
+		}
+		else
+		{
+			groundSurface 	= Material.RED_STAINED_GLASS;
+			groundSupport 	= Material.RED_STAINED_GLASS;
+			liquid 			= Material.LAVA;
+		}
+		
+		isLakeSpawning = false;
 	}
 	
 	@Override
@@ -31,11 +45,6 @@ public class AquariumBiome extends BiomeBuilder {
 	
 	public void generateLiquid(World world, Chunk chunk)
 	{
-		Material liquid;
-		if (CommonTools.randProb() < 0.70D)
-			liquid = Material.WATER;
-		else
-			liquid = Material.LAVA;
 		Block currBlock = chunk.getBlock(0, 0, 0);
 		Location currLocation = currBlock.getLocation();
 		int wX = currLocation.getBlockX();

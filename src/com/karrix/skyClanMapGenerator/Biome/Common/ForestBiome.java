@@ -6,10 +6,8 @@ import org.bukkit.block.Biome;
 
 import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
 import com.karrix.skyClanMapGenerator.Group.GroundGroup;
-import com.karrix.skyClanMapGenerator.Group.OreGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 import com.karrix.skyClanMapGenerator.Salt.Salt;
-import com.karrix.skyClanMapGenerator.Salt.SaltOre;
 import com.karrix.skyClanMapGenerator.Salt.SaltTree;
 import com.karrix.skyClanMapGenerator.Salt.Preset.SaltCommonPreset;
 

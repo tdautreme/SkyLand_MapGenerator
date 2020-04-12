@@ -2,26 +2,12 @@ package com.karrix.skyClanMapGenerator;
 
 import java.util.Arrays;
 import java.util.List;
-//import java.util.Arrays;
-//import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
-//import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
-//import org.bukkit.util.noise.SimplexOctaveGenerator;
 
-import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
-//import com.karrix.skyClanMapGenerator.Populator.BiomePopulator;
-//import com.karrix.skyClanMapGenerator.Populator.GroundPopulator;
-//import com.karrix.skyClanMapGenerator.Populator.LakePopulator;
-//import com.karrix.skyClanMapGenerator.Populator.PlantPopulator;
-//import com.karrix.skyClanMapGenerator.Populator.TreePopulator;
 import com.karrix.skyClanMapGenerator.Populator.ChunkPopulator;
 
 public class CustomChunkGenerator extends ChunkGenerator {

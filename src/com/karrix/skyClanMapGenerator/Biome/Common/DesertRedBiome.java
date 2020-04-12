@@ -5,8 +5,6 @@ import org.bukkit.block.Biome;
 
 import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
 import com.karrix.skyClanMapGenerator.Group.GroundGroup;
-//import com.karrix.skyClanMapGenerator.Group.PlantGroup;
-//import com.karrix.skyClanMapGenerator.Group.ProbGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 import com.karrix.skyClanMapGenerator.Salt.Salt;
 import com.karrix.skyClanMapGenerator.Salt.SaltCactus;
@@ -19,7 +17,8 @@ public class DesertRedBiome extends BiomeBuilder {
 		
 		groundSurface 	= Material.RED_SAND;
 		groundGroup 	= new GroundGroup[] {
-								new GroundGroup(Material.RED_SAND, 2)
+								new GroundGroup(Material.RED_SAND, 1),
+								new GroundGroup(Material.RED_SANDSTONE, 1)
 							};
 		groundSupport 	= Material.RED_SANDSTONE;
 		

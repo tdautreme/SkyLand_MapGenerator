@@ -1,7 +1,5 @@
 package com.karrix.skyClanMapGenerator;
 
-import org.apache.logging.log4j.Logger;
-
 public class ConsoleLog {
 	private static MapGenerator mapGenerator;
 	

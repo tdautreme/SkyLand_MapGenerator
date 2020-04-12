@@ -6,8 +6,6 @@ import org.bukkit.block.Biome;
 
 import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
 import com.karrix.skyClanMapGenerator.Group.GroundGroup;
-//import com.karrix.skyClanMapGenerator.Group.PlantGroup;
-//import com.karrix.skyClanMapGenerator.Group.ProbGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 import com.karrix.skyClanMapGenerator.Salt.Salt;
 import com.karrix.skyClanMapGenerator.Salt.SaltCactus;
@@ -21,7 +19,8 @@ public class DesertOasisBiome extends BiomeBuilder {
 		
 		groundSurface 	= Material.SAND;
 		groundGroup 	= new GroundGroup[] {
-								new GroundGroup(Material.SAND, 2)
+								new GroundGroup(Material.SAND, 1),
+								new GroundGroup(Material.SANDSTONE, 1)
 							};
 		groundSupport 	= Material.SANDSTONE;
 		

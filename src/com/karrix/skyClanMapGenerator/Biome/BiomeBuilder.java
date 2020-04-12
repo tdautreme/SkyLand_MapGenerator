@@ -33,13 +33,16 @@ public class BiomeBuilder {
 	public SaltGroup[] 		saltLayers;
 	public OreGroup[]		oreLayers;
 	
+	public boolean			isLakeSpawning = true;
+	
 	public void generate(World world, Chunk chunk, Random random) {
 		int 	chunkX = chunk.getX();
 		int 	chunkZ = chunk.getZ();
 		
 		generateBiomeLauncher(world, chunk, chunkX, chunkZ, random);
 		generateGroundLauncher(world, chunk, chunkX, chunkZ, random);
-		generateLakeLauncher(world, chunk, chunkX, chunkZ, random);
+		if (isLakeSpawning)
+			generateLakeLauncher(world, chunk, chunkX, chunkZ, random);
 		generateTreeLauncher(world, chunk, chunkX, chunkZ, random);
 		generateSaltLauncher(world, chunk, chunkX, chunkZ, random);
 		generateOreLauncher(world, chunk, chunkX, chunkZ, random);
