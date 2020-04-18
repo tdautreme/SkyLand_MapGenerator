@@ -10,13 +10,8 @@ import org.bukkit.generator.ChunkGenerator;
 
 import com.karrix.skyClanMapGenerator.Populator.ChunkPopulator;
 
-public class CustomChunkGenerator extends ChunkGenerator {
-    private MapGenerator	_plugin;
-    
-    public CustomChunkGenerator(MapGenerator plugin)
-    {
-    	_plugin = plugin;
-    }
+public class CustomChunkGenerator extends ChunkGenerator {    
+
     
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biome) {
@@ -27,6 +22,6 @@ public class CustomChunkGenerator extends ChunkGenerator {
     
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world) {
-        return Arrays.asList((BlockPopulator)new ChunkPopulator(_plugin));
+        return Arrays.asList((BlockPopulator)new ChunkPopulator());
     }
 }

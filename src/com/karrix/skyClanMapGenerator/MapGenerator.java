@@ -18,6 +18,6 @@ public final class MapGenerator extends JavaPlugin {
     
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        return new CustomChunkGenerator(this);
+        return new CustomChunkGenerator();
     }
 }

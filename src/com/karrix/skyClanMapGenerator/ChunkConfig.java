@@ -1,12 +1,12 @@
 package com.karrix.skyClanMapGenerator;
 
-import com.karrix.skyClanMapGenerator.Biome.BiomeBuilder;
-import com.karrix.skyClanMapGenerator.Biome.Common.DesertBiome;
-import com.karrix.skyClanMapGenerator.Biome.Common.DesertOasisBiome;
-import com.karrix.skyClanMapGenerator.Biome.Common.DesertRedBiome;
-import com.karrix.skyClanMapGenerator.Biome.Common.DesertRedOasisBiome;
+import com.karrix.skyClanMapGenerator.Biome.IslandBuilder;
+//import com.karrix.skyClanMapGenerator.Biome.Common.DesertBiome;
+//import com.karrix.skyClanMapGenerator.Biome.Common.DesertOasisBiome;
+//import com.karrix.skyClanMapGenerator.Biome.Common.DesertRedBiome;
+//import com.karrix.skyClanMapGenerator.Biome.Common.DesertRedOasisBiome;
 import com.karrix.skyClanMapGenerator.Biome.Common.ForestBiome;
-import com.karrix.skyClanMapGenerator.Biome.Rare.AquariumBiome;
+//import com.karrix.skyClanMapGenerator.Biome.Rare.AquariumBiome;
 
 public class ChunkConfig {
     public static int 				seaHeight 			= 63;
@@ -14,15 +14,15 @@ public class ChunkConfig {
     public static int 				territoryDistance	= 3 * islandDistance;
     public static double 			maxDistance 		= Math.hypot(0 - 8, 0 - 8);
     
-    public static BiomeBuilder[] 	commonBiomes		= {
+    public static IslandBuilder[] 	commonBiomes		= {
 												    		new ForestBiome(),
-												    		new DesertBiome()
+//												    		new DesertBiome()
 												    	};
-    public static BiomeBuilder[]	rareBiomes			= {
-    														new DesertRedBiome(),
-    														new DesertOasisBiome(),
-    														new DesertRedOasisBiome(),
-    														new AquariumBiome()
+    public static IslandBuilder[]	rareBiomes			= {
+//    														new DesertRedBiome(),
+//    														new DesertOasisBiome(),
+//    														new DesertRedOasisBiome(),
+//    														new AquariumBiome()
     													};
     
     public static boolean isTerritoryChunk(int chunkX, int chunkZ)

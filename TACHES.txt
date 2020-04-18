@@ -5,3 +5,7 @@
 - Patch plant half
 - Add biomes
 - Schematics + random rotation (Same for clan spawn)
+
+------------------
+- Pour le desert rajouter un sand saver pour pas qu'il tombe dans le vide
+- Pour les salt faut creer un nouveau system de sauvegarde de surface pour les surface avec plusieurs tableau par surface possible (On gere plus avec une proba de posage mais avec une proba de contenue comme pour les ores)
