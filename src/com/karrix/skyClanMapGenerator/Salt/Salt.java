@@ -1,31 +1,50 @@
 package com.karrix.skyClanMapGenerator.Salt;
 
-import java.util.Random;
-
-import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
-public class Salt {
+public abstract class Salt {
 	protected Material 		saltBlock;
-	public Material 		surfaceBlock;
+	protected TreeType		saltTree;
 	protected int 			height;
-	
-	public Salt(Material i_saltBlock, Material i_surfaceBlock, Integer... argsArr)
+	protected int 			neg;
+	public Salt(Material i_saltBlock)
 	{
 		saltBlock 		= i_saltBlock;
-		surfaceBlock 	= i_surfaceBlock;
-		if (argsArr.length > 0)
-			height = argsArr[0];
-		else
-			height = 1;
+		neg 			= 1;
+		height 			= 1;
 	}
 	
-	public void GenerateSalt(Random random, World world, Chunk chunk, int X, int Y, int Z)
+	public Salt(Material i_saltBlock, int i_height)
 	{
-		if (chunk.getBlock(X, Y, Z).getType() != surfaceBlock) return;
-		++Y;
+		saltBlock 		= i_saltBlock;
+		neg 			= i_height < 0 ? -1 : 1;
+		height 			= i_height * neg;
+	}
+	
+	public Salt(TreeType i_saltTree)
+	{
+		saltBlock 		= null;
+		saltTree 		= i_saltTree;
+		height 			= 1;
+	}
+	
+	public void generate(World world, Block currentBlock, Material[] supportBlock)
+	{
+		Location loc = currentBlock.getLocation();
+		GenerateSalt(world, currentBlock, supportBlock, (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
+	}
+	
+	public void GenerateSalt(World world, Block currentBlock, Material[] supportBlock, int X, int Y, int Z)
+	{
 		for (int i = 0; i < height; ++i)
-			chunk.getBlock(X, Y + i, Z).setType(saltBlock);
+		{
+			currentBlock.setType(saltBlock);
+			Y += neg;
+			currentBlock = world.getBlockAt(X, Y, Z);
+		}
 	}
 }

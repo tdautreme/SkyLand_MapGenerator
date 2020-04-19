@@ -1,13 +1,10 @@
 package com.karrix.skyClanMapGenerator.WorldGenerator;
 
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 import com.karrix.skyClanMapGenerator.ChunkConfig;
 import com.karrix.skyClanMapGenerator.CommonTools;
-import com.karrix.skyClanMapGenerator.ConsoleLog;
-import com.karrix.skyClanMapGenerator.WorldGeneratorDim;
 
 public class WorldGeneratorSimpleIsland extends WorldGenerator {
 	
@@ -40,17 +37,20 @@ public class WorldGeneratorSimpleIsland extends WorldGenerator {
 	
 	public void ShapeGenerator(World world, double[][] topPerlin, double[][] botPerlin, int sizeX, int sizeZ, int worldStartX, int worldStartZ, int worldCenterY)
 	{
-		int targetHeight;
+		int topHeight;
+		int botHeight;
     	for (int  X = 0; X < sizeX; ++X)
     		for (int Z = 0; Z < sizeZ; ++Z)
     		{
-//    			ConsoleLog.Log(X + "/" + sizeX +"   "+Z+"/"+sizeZ);
-    			targetHeight = (int)topPerlin[X][Z];
-    			for (int Y = 0; Y < targetHeight; ++Y)
-    				world.getBlockAt(worldStartX + X, worldCenterY + Y, worldStartZ + Z).setType(Material.STONE);
-    			targetHeight = (int)botPerlin[X][Z];
-				for (int Y = 0; Y < targetHeight; ++Y)
-    				world.getBlockAt(worldStartX + X, worldCenterY - Y, worldStartZ + Z).setType(Material.STONE);
+    			topHeight = (int)topPerlin[X][Z];
+    			botHeight = (int)botPerlin[X][Z];
+    			if (topHeight + botHeight > 1)
+    			{
+        			for (int Y = 0; Y < topHeight; ++Y)
+        				world.getBlockAt(worldStartX + X, worldCenterY + Y, worldStartZ + Z).setType(constructMaterial);
+    				for (int Y = 1; Y < botHeight; ++Y)
+        				world.getBlockAt(worldStartX + X, worldCenterY - Y, worldStartZ + Z).setType(constructMaterial);	
+    			}
     		}
 	}
 	

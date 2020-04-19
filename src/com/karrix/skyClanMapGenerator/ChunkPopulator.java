@@ -1,4 +1,4 @@
-package com.karrix.skyClanMapGenerator.Populator;
+package com.karrix.skyClanMapGenerator;
 
 import java.util.Random;
 
@@ -9,9 +9,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
-import com.karrix.skyClanMapGenerator.ChunkConfig;
-import com.karrix.skyClanMapGenerator.CommonTools;
-import com.karrix.skyClanMapGenerator.MapGenerator;
 import com.karrix.skyClanMapGenerator.Biome.IslandBuilder;
 
 public class ChunkPopulator extends BlockPopulator {	
@@ -46,14 +43,14 @@ public class ChunkPopulator extends BlockPopulator {
 				
 			}
 		}
-		else {
-//	    	_plugin.getLogger().info("CHUNK_GENERATION_23");
-			for (int X = 0; X < 16; X++)
-				for (int Z = 0; Z < 16; Z++) {
-					final Block block = chunk.getBlock(X, 0, Z);
-					block.setBiome(Biome.OCEAN);
-				}
-		  	}
+//		else {
+////	    	_plugin.getLogger().info("CHUNK_GENERATION_23");
+//			for (int X = 0; X < 16; X++)
+//				for (int Z = 0; Z < 16; Z++) {
+//					final Block block = chunk.getBlock(X, 0, Z);
+//					block.setBiome(Biome.OCEAN);
+//				}
+//		  	}
 	}
 	
   public void set3DPlatform(Chunk chunk, int height, int padX, int padZ) {

@@ -8,4 +8,5 @@
 
 ------------------
 - Pour le desert rajouter un sand saver pour pas qu'il tombe dans le vide
-- Pour les salt faut creer un nouveau system de sauvegarde de surface pour les surface avec plusieurs tableau par surface possible (On gere plus avec une proba de posage mais avec une proba de contenue comme pour les ores)
+- FAIT Pour les salt faut creer un nouveau system de sauvegarde de surface pour les surface avec plusieurs tableau par surface possible (On gere plus avec une proba de posage mais avec une proba de contenue comme pour les ores)
+- Pour les salt group, faut rajouter 2 parametre au group (SurfaceBlockDict || GroundBlockDict) + (AllowedSurfaceBlock || AllowedGroundBlock) --> Avec des 2 choses on calcules la totalLen a partir des baseLength pour la proba

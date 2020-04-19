@@ -23,8 +23,31 @@ public class CommonTools {
 	public static <T> T randChoice(T[] array) {
 		return array[randInt(0, array.length - 1)];
 	}
-	
-	public static <T> T randChoiceList(List<T> list) {
+
+	public static <T> T randChoice(List<T> list) {
 		return list.get(randInt(0, list.size() - 1));
+	}
+	
+	public static <T> int randChoiceIdx(T[] array) {
+		return randInt(0, array.length - 1);
+	}
+	
+	public static <T> int randChoiceIdx(List<T> list) {
+		return randInt(0, list.size() - 1);
+	}
+	
+	public static <T> T randChoiceDel(List<T> list) {
+		int curIdx = randChoiceIdx(list);
+		T ret = list.get(curIdx);
+		list.remove(curIdx);
+		return ret;
+	}
+	
+	public static <T> boolean arrayContain(T[] array, T elem)
+	{
+		for (T curElem : array)
+			if (curElem == elem)
+				return true;
+		return false;
 	}
 }

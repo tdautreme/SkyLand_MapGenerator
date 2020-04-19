@@ -8,7 +8,7 @@ import com.karrix.skyClanMapGenerator.Biome.IslandBuilder;
 import com.karrix.skyClanMapGenerator.Group.BlockGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 import com.karrix.skyClanMapGenerator.Salt.Salt;
-import com.karrix.skyClanMapGenerator.Salt.SaltTree;
+import com.karrix.skyClanMapGenerator.Salt.SaltSurface;
 import com.karrix.skyClanMapGenerator.Salt.Preset.SaltCommonPreset;
 
 public class ForestBiome extends IslandBuilder {
@@ -17,12 +17,16 @@ public class ForestBiome extends IslandBuilder {
 	{
 		biome 			= Biome.FOREST;
 		
-//		groundSurface 	= Material.GRASS_BLOCK;
 		blockGroup 		= new BlockGroup[] {
 								new BlockGroup(Material.GRASS_BLOCK, 1),
 								new BlockGroup(Material.DIRT, 2)
 							};
-//		groundSupport 	= Material.STONE;
+		
+//		Material[] simpleSaltSurface = new Material[] {Material.GRASS_BLOCK, Material.DIRT};
+  		
+		saltSurfaceGroup = SaltCommonPreset.GetForestSaltSurfaceGroup();
+		saltOreGroup = SaltCommonPreset.GetSimpleOreGroup();
+		//		groundSupport 	= Material.STONE;
 		
 //		groundSurfaceOre = Material.STONE;
 		

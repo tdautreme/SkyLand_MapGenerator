@@ -1,5 +1,7 @@
 package com.karrix.skyClanMapGenerator.Biome;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Chunk;
@@ -12,11 +14,11 @@ import org.bukkit.util.noise.SimplexOctaveGenerator;
 import com.karrix.skyClanMapGenerator.ChunkConfig;
 import com.karrix.skyClanMapGenerator.CommonTools;
 import com.karrix.skyClanMapGenerator.ConsoleLog;
-import com.karrix.skyClanMapGenerator.WorldGeneratorDim;
 import com.karrix.skyClanMapGenerator.Group.BlockGroup;
-import com.karrix.skyClanMapGenerator.Group.OreGroup;
+//import com.karrix.skyClanMapGenerator.Group.OreGroup;
 import com.karrix.skyClanMapGenerator.Group.SaltGroup;
 import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGenerator;
+import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorDim;
 import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorGetter;
 import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorSimpleIsland;
 
@@ -27,24 +29,19 @@ import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorSimpleIsland;
 
 public class IslandBuilder {
 	public String 			worldGenerator = "SimpleIsland";
+	public Material			worldConstructMaterial = Material.STONE;
 	public Biome			biome = Biome.FOREST;
 	public boolean			isLakeSpawning = true;
 	public int				sizeMin = 35;
 	public int				sizeMax = 50;
 	public int				seaHeight = ChunkConfig.seaHeight;
-	public int				seaRange = 8;
+	public int				seaRange = 16;
 	
-
-//	public Material 		groundSurface;
 	public BlockGroup[] 	blockGroup;
-	public Material[]		blockSupportOre = {Material.STONE};
-//	public Material			groundSupport;
 	
-//	public Material 		groundSurfaceOre = Material.STONE;
-	
-	public SaltGroup[]		treeLayers;
-	public SaltGroup[] 		saltLayers;
-	public OreGroup[]		oreLayers;
+	public SaltGroup[] 		saltSurfaceGroup;
+	public SaltGroup[]		saltOreGroup;
+
 	
 	
 	// ========================= CONSTANT SEPARARTION
@@ -54,7 +51,7 @@ public class IslandBuilder {
 		int 	chunkZ = chunk.getZ();
 		
 		// First we need to generate ground to get his dim
-		WorldGeneratorDim wGD = WorldGeneratorGetter.Get(worldGenerator).generate(world, chunkX, chunkZ);
+		WorldGeneratorDim wGD = WorldGeneratorGetter.Get(worldGenerator).generate(world, chunkX, chunkZ, worldConstructMaterial);
 		
 		// And next we populate
 		populate(world, wGD);
@@ -64,12 +61,19 @@ public class IslandBuilder {
 	{
 		generateBiomeLauncher(world, wGD);
 		generateBlockLauncher(world, wGD);
-		// ICI IL FAUT RECUPERER TOUS LES BLOCKS DE SURFACE DONC EN CONTACTE AVEC L'AIR AU DESSUS
 		if (isLakeSpawning)
 			generateLakeLauncher(world, wGD);
-		generateSaltSurfaceTreeLauncher(world, wGD);
-		generateSaltSurfaceLauncher(world, wGD);
-		generateSaltOreLauncher(world, wGD);
+		
+		// We get dict of all surface block and ground block for put Salt optimized
+		List<BlockKey> surfaceBlockDict = getSurfaceBlockDict(world, wGD);
+		List<BlockKey> groundBlockDict	= getGroundBlockDict(world, wGD);
+		
+		// We set base length for Salt probability
+		for (BlockKey sbk : surfaceBlockDict) 	sbk.SetBaseLength();
+		for (BlockKey gbk : groundBlockDict) 	gbk.SetBaseLength();
+		
+		generateSaltSurfaceLauncher(world, surfaceBlockDict);
+		generateSaltOreLauncher(world, groundBlockDict);
 	}
 	
 	// ========================== LAUNCHER
@@ -86,31 +90,26 @@ public class IslandBuilder {
 	
 	public void generateLakeLauncher(World world, WorldGeneratorDim wGD)
 	{
-		
+		generateLake(world, wGD);
 	}
 	
-	public void generateSaltSurfaceTreeLauncher(World world, WorldGeneratorDim wGD)
+	public void generateSaltSurfaceLauncher(World world, List<BlockKey> surfaceBlockDict)
 	{
-		
+		generateSalt(world, saltSurfaceGroup, surfaceBlockDict);
 	}
 	
-	public void generateSaltSurfaceLauncher(World world, WorldGeneratorDim wGD)
+	public void generateSaltOreLauncher(World world, List<BlockKey> groundBlockDict)
 	{
-		
-	}
-	
-	public void generateSaltOreLauncher(World world, WorldGeneratorDim wGD)
-	{
-		
+		generateSalt(world, saltOreGroup, groundBlockDict);
 	}
 	
 	// ========================== EXECUTION
 
 	public void generateBiome(World world, WorldGeneratorDim wGD)
 	{
-		for (int X = 0; X < wGD.sizeX; X++)
-			for (int Z = 0; Z < wGD.sizeZ; Z++)
-				world.getBlockAt(wGD.worldStartX + X, 0, wGD.worldStartZ + Z).setBiome(biome);
+		for (int X = wGD.worldStartX; X < wGD.worldEndX; ++X)
+			for (int Z = wGD.worldStartZ; Z < wGD.worldEndZ; ++Z)
+				world.getBlockAt(X, 0, Z).setBiome(biome);
 	}
 	
 	public void generateBlock(World world, WorldGeneratorDim wGD)
@@ -149,6 +148,143 @@ public class IslandBuilder {
 					if (Y == -1) return Y;
 				}
 		return Y;
+	}
+	
+	public List<BlockKey> getSurfaceBlockDict(World world, WorldGeneratorDim wGD)
+	{
+		List<BlockKey> dict = new ArrayList<>();
+		for (int X = wGD.worldStartX; X < wGD.worldEndX; ++X)
+			for (int Z = wGD.worldStartZ; Z < wGD.worldEndZ; ++Z)
+			{
+				int Y = wGD.worldEndY - 1;
+				for (; Y >= wGD.worldStartY && world.getBlockAt(X, Y, Z).getType() == Material.AIR; --Y);
+				if (Y >= wGD.worldStartY && world.getBlockAt(X, Y + 1, Z).getType() == Material.AIR)
+				{
+					Block currentBlock = world.getBlockAt(X, Y, Z);
+					if (currentBlock.getType() != Material.AIR)
+						addBlockToDict(dict, currentBlock);
+				}
+			}
+		return dict;
+	}
+	
+	public List<BlockKey> getGroundBlockDict(World world, WorldGeneratorDim wGD)
+	{
+		List<BlockKey> dict = new ArrayList<>();
+		Block currentBlock = null;
+		Block topBlock = null;
+		for (int X = wGD.worldStartX; X < wGD.worldEndX; ++X)
+			for (int Z = wGD.worldStartZ; Z < wGD.worldEndZ; ++Z)
+			{
+				for (int Y = wGD.worldStartY; Y < wGD.worldEndY; ++Y)
+				{
+					if (currentBlock == null)
+						currentBlock = world.getBlockAt(X, Y, Z);
+					topBlock = world.getBlockAt(X, Y + 1, Z);
+					if (currentBlock.getType() != Material.AIR && topBlock.getType() != Material.AIR)
+						addBlockToDict(dict, currentBlock);
+					currentBlock = topBlock;
+				}
+				currentBlock = null;
+			}
+		return dict;
+	}
+	
+	public void addBlockToDict(List<BlockKey> dict, Block block)
+	{
+		Material targetMaterial = block.getType();
+		for (BlockKey key : dict)
+			if (key.material == targetMaterial)
+			{
+				key.list.add(block);
+				return ;
+			}
+		dict.add(new BlockKey(block));
+	}
+	
+	public void generateSalt(World world, SaltGroup[] currentGroup, List<BlockKey> currentBlockDict)
+	{
+		if (currentGroup == null) return ;
+		for (int i = 0; i < currentGroup.length; ++i)
+			currentGroup[i].Generate(world, currentBlockDict);	
+	}
+	
+	public void generateLake (World world, WorldGeneratorDim wGD) {
+		Random random = new Random();
+//			if (random.nextInt(3) == 0) {  // The chance of spawning a lake
+		if (true) {  // The chance of spawning a lake
+			int X = wGD.worldStartX + random.nextInt(wGD.sizeX - 1) - wGD.sizeX / 2;
+			int Z = wGD.worldStartZ + random.nextInt(wGD.sizeZ - 1) - wGD.sizeZ / 2;
+			int Y;
+			for (Y = wGD.worldEndY - 1; world.getBlockAt(X, Y, Z).getType() == Material.AIR && Y >= wGD.worldStartY; --Y);
+			if (! (Y >= wGD.worldStartY)) return ;
+//			for (Y = world.getMaxHeight()-1; world.getBlockAt(X, Y, Z).getType() == Material.AIR; Y--);
+			Y -= 7;
+			Material laveOrWater = random.nextInt(100) < 90 ? Material.WATER : Material.LAVA;
+			boolean[] aboolean = new boolean[2048];
+			int i = random.nextInt(4)+4;
+					
+			int j, j1, k1;
+					
+			for (j = 0; j < i; ++j) {
+	            double d0 = random.nextDouble() * 6.0D + 3.0D;
+	            double d1 = random.nextDouble() * 4.0D + 2.0D;
+	            double d2 = random.nextDouble() * 6.0D + 3.0D;
+	            double d3 = random.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
+	            double d4 = random.nextDouble() * (8.0D - d1 - 4.0D) + 2.0D + d1 / 2.0D;
+	            double d5 = random.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
+
+	            for (int k = 1; k < 15; ++k) {
+	                for (int l = 1; l < 15; ++l) {
+	                    for (int i1 = 1; i1 < 7; ++i1) {
+	                        double d6 = ((double) k - d3) / (d0 / 2.0D);
+	                        double d7 = ((double) i1 - d4) / (d1 / 2.0D);
+	                        double d8 = ((double) l - d5) / (d2 / 2.0D);
+	                        double d9 = d6 * d6 + d7 * d7 + d8 * d8;
+
+	                        if (d9 < 1.0D) {
+	                            aboolean[(k * 16 + l) * 8 + i1] = true;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+				
+			for (j = 0; j < 16; ++j) {
+	            for (k1 = 0; k1 < 16; ++k1) {
+	                for (j1 = 0; j1 < 8; ++j1) {
+	                    if (aboolean[(j * 16 + k1) * 8 + j1]) {
+	                    	if (world.getBlockAt(X + j + 1, Y + j1, Z + k1).getType() != Material.AIR &&
+                    			world.getBlockAt(X + j - 1, Y + j1, Z + k1).getType() != Material.AIR &&
+                    			world.getBlockAt(X + j, Y + j1, Z + k1 + 1).getType() != Material.AIR &&
+                    			world.getBlockAt(X + j, Y + j1, Z + k1 - 1).getType() != Material.AIR &&
+                    			world.getBlockAt(X + j, Y + j1 - 1, Z + k1).getType() != Material.AIR)
+	                    	{
+		                        world.getBlockAt(X + j, Y + j1, Z + k1).setType(j1>4 ? Material.AIR : laveOrWater);
+	                    	}
+	                    }
+	                }
+	            }
+	        }
+					
+//			for (j = 0; j < 16; ++j) {
+//	            for (k1 = 0; k1 < 16; ++k1) {
+//	                for (j1 = 4; j1 < 8; ++j1) {
+//	                    if (aboolean[(j * 16 + k1) * 8 + j1]) {
+//	                      	int X1 = X+j;
+//	                       	int Y1 = Y+j1-1;
+//	                       	int Z1 = Z+k1;
+//	                        if (world.getBlockAt(X1, Y1, Z1).getType() == Material.DIRT) {
+//	                        	if (world.getBlockAt(X1, Y1 + 1, Z1).getType() == Material.AIR)
+//	                        		world.getBlockAt(X1, Y1, Z1).setType(blockGroup[0]);
+//	                        	else if (groundGroup.length > 0)
+//	                        		world.getBlockAt(X1, Y1, Z1).setType(groundGroup[0].material);
+//	                        }
+//	                    }
+//	                }
+//	            }
+//	        }
+		}
 	}
 	
 	// ----------------- LAUNCHER GENERATOR
@@ -250,81 +386,7 @@ public class IslandBuilder {
 //    	}
 //	}
 //	
-//	public void generateLake (World world, Chunk chunk, int chunkX, int chunkZ, Random random) {
-//
-////			if (random.nextInt(3) == 0) {  // The chance of spawning a lake
-//		if (true) {  // The chance of spawning a lake
-//			int X = chunkX * 16 + random.nextInt(15)-8;
-//			int Z = chunkZ * 16 + random.nextInt(15)-8;
-//			int Y;
-//			for (Y = world.getMaxHeight()-1; world.getBlockAt(X, Y, Z).getType() == Material.AIR; Y--);
-//			Y -= 7;
-//			Material laveOrWater = random.nextInt(100) < 90 ? Material.WATER : Material.LAVA;
-//			boolean[] aboolean = new boolean[2048];
-//			int i = random.nextInt(4)+4;
-//					
-//			int j, j1, k1;
-//					
-//			for (j = 0; j < i; ++j) {
-//	            double d0 = random.nextDouble() * 6.0D + 3.0D;
-//	            double d1 = random.nextDouble() * 4.0D + 2.0D;
-//	            double d2 = random.nextDouble() * 6.0D + 3.0D;
-//	            double d3 = random.nextDouble() * (16.0D - d0 - 2.0D) + 1.0D + d0 / 2.0D;
-//	            double d4 = random.nextDouble() * (8.0D - d1 - 4.0D) + 2.0D + d1 / 2.0D;
-//	            double d5 = random.nextDouble() * (16.0D - d2 - 2.0D) + 1.0D + d2 / 2.0D;
-//
-//	            for (int k = 1; k < 15; ++k) {
-//	                for (int l = 1; l < 15; ++l) {
-//	                    for (int i1 = 1; i1 < 7; ++i1) {
-//	                        double d6 = ((double) k - d3) / (d0 / 2.0D);
-//	                        double d7 = ((double) i1 - d4) / (d1 / 2.0D);
-//	                        double d8 = ((double) l - d5) / (d2 / 2.0D);
-//	                        double d9 = d6 * d6 + d7 * d7 + d8 * d8;
-//
-//	                        if (d9 < 1.0D) {
-//	                            aboolean[(k * 16 + l) * 8 + i1] = true;
-//	                        }
-//	                    }
-//	                }
-//	            }
-//	        }
-//				
-//			for (j = 0; j < 16; ++j) {
-//	            for (k1 = 0; k1 < 16; ++k1) {
-//	                for (j1 = 0; j1 < 8; ++j1) {
-//	                    if (aboolean[(j * 16 + k1) * 8 + j1]) {
-//	                    	if (world.getBlockAt(X + j + 1, Y + j1, Z + k1).getType() != Material.AIR &&
-//                    			world.getBlockAt(X + j - 1, Y + j1, Z + k1).getType() != Material.AIR &&
-//                    			world.getBlockAt(X + j, Y + j1, Z + k1 + 1).getType() != Material.AIR &&
-//                    			world.getBlockAt(X + j, Y + j1, Z + k1 - 1).getType() != Material.AIR &&
-//                    			world.getBlockAt(X + j, Y + j1 - 1, Z + k1).getType() != Material.AIR)
-//	                    	{
-//		                        world.getBlockAt(X + j, Y + j1, Z + k1).setType(j1>4 ? Material.AIR : laveOrWater);
-//	                    	}
-//	                    }
-//	                }
-//	            }
-//	        }
-//					
-//			for (j = 0; j < 16; ++j) {
-//	            for (k1 = 0; k1 < 16; ++k1) {
-//	                for (j1 = 4; j1 < 8; ++j1) {
-//	                    if (aboolean[(j * 16 + k1) * 8 + j1]) {
-//	                      	int X1 = X+j;
-//	                       	int Y1 = Y+j1-1;
-//	                       	int Z1 = Z+k1;
-//	                        if (world.getBlockAt(X1, Y1, Z1).getType() == Material.DIRT) {
-//	                        	if (world.getBlockAt(X1, Y1 + 1, Z1).getType() == Material.AIR)
-//	                        		world.getBlockAt(X1, Y1, Z1).setType(groundSurface);
-//	                        	else if (groundGroup.length > 0)
-//	                        		world.getBlockAt(X1, Y1, Z1).setType(groundGroup[0].material);
-//	                        }
-//	                    }
-//	                }
-//	            }
-//	        }
-//		}
-//	}
+
 	
 //	public void generateTree(World world, Chunk chunk, int chunkX, int chunkZ, Random random) {
 //		if (treeLayers != null)

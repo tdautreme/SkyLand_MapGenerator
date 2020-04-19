@@ -8,8 +8,6 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
-import com.karrix.skyClanMapGenerator.Populator.ChunkPopulator;
-
 public class CustomChunkGenerator extends ChunkGenerator {    
 
     

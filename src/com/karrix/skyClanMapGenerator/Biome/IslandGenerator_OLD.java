@@ -8,8 +8,8 @@ import org.bukkit.block.Block;
 
 import com.karrix.skyClanMapGenerator.ChunkConfig;
 import com.karrix.skyClanMapGenerator.CommonTools;
-import com.karrix.skyClanMapGenerator.WorldGeneratorDim;
 import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGenerator;
+import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorDim;
 import com.karrix.skyClanMapGenerator.WorldGenerator.WorldGeneratorGetter;
 
 public class IslandGenerator_OLD {

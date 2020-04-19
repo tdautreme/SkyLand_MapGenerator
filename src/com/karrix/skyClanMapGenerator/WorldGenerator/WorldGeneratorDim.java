@@ -1,4 +1,4 @@
-package com.karrix.skyClanMapGenerator;
+package com.karrix.skyClanMapGenerator.WorldGenerator;
 
 public class WorldGeneratorDim {
 	public int sizeX;
@@ -13,6 +13,10 @@ public class WorldGeneratorDim {
 	public int worldStartY;
 	public int worldStartZ;
 	
+	public int worldEndX;
+	public int worldEndY;
+	public int worldEndZ;
+	
 	public WorldGeneratorDim(int i_sizeX, int i_sizeY, int i_sizeZ, int i_worldCenterX, int i_worldCenterY, int i_worldCenterZ, int i_worldStartX, int i_worldStartY, int i_worldStartZ)
 	{
 		sizeX = i_sizeX;
@@ -24,6 +28,9 @@ public class WorldGeneratorDim {
 		worldStartX = i_worldStartX;
 		worldStartY = i_worldStartY;
 		worldStartZ = i_worldStartZ;
+		worldEndX = worldStartX + sizeX;
+		worldEndY = worldStartY + sizeY;
+		worldEndZ = worldStartZ + sizeZ;
 	}
 	
 	public String toString()

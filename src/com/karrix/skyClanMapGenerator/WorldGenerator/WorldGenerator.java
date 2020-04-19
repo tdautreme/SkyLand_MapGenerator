@@ -1,8 +1,7 @@
 package com.karrix.skyClanMapGenerator.WorldGenerator;
 
+import org.bukkit.Material;
 import org.bukkit.World;
-
-import com.karrix.skyClanMapGenerator.WorldGeneratorDim;
 
 public class WorldGenerator {	
 	public int sizeX;
@@ -17,8 +16,11 @@ public class WorldGenerator {
 	public int worldStartY;
 	public int worldStartZ;
 
-	public WorldGeneratorDim generate(World world, int chunkX, int chunkZ)
+	public Material constructMaterial;
+	
+	public WorldGeneratorDim generate(World world, int chunkX, int chunkZ, Material i_constructMaterial)
 	{
+		constructMaterial = i_constructMaterial;
 		generateWorld(world, chunkX, chunkZ);
 		return new WorldGeneratorDim(sizeX, sizeY, sizeZ, worldCenterX, worldCenterY, worldCenterZ, worldStartX, worldStartY, worldStartZ);
 	}
